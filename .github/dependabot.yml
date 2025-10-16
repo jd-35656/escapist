@@ -17,7 +17,7 @@ updates:
     commit-message:
       prefix: "deps"
       include: "scope"
-    versioning-strategy: widen
+    versioning-strategy: auto
     rebase-strategy: auto
 
   - package-ecosystem: "github-actions"
