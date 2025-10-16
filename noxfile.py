@@ -59,7 +59,7 @@ def _load_dotenv(path: str | Path = Path(".env")) -> dict[str, str]:
 def _draft_changelog(session: nox.Session) -> Path:
     """Generate a draft changelog using Towncrier for local preview."""
     draft_path = Path("docs/_draft_changelog.md")
-    content = session.run("towncrier", "build", "--version", "Upcoming", "--draft", silent=True)
+    content = session.run("towncrier", "build", "--version", "Upcoming", "--draft", silent=True, external=True)
     if not content or "No significant changes" in content:
         return draft_path
 
@@ -87,53 +87,59 @@ DOCS_DEPS = _get_optional_deps("docs")
 @nox.session(python=PYTHON_VERSIONS)
 def devenv(session: nox.Session) -> None:
     """
-    Set up the full development environment.
+    🔧 Set up the full development environment.
 
-    Installs the project in editable mode along with test, type, and doc dependencies.
-    Displays Python path and virtual environment activation info for IDE setup.
+    Installs the project in editable mode along with all development extras:
+    tests, type checking, and documentation dependencies.
+
+    Useful for local development or onboarding.
+
+    Example:
+        nox -s devenv
+        nox -s devenv-3.13
+
+    After completion, activate the environment manually:
+        source .nox/devenv-3-13/bin/activate  (on Unix)
+        .nox\\devenv-3-13\\Scripts\\activate   (on Windows)
     """
     session.env.update(_load_dotenv())
 
-    # ────────────────────────────────────────────────
     session.log("")
     session.log("🔧 Setting up development environment...\n")
 
     session.log("📦 Upgrading pip...")
-    session.run("python", "-m", "pip", "install", "--upgrade", "pip")
+    session.run("python", "-m", "pip", "install", "--upgrade", "pip", external=True)
 
     session.log("📚 Installing project with dev dependencies (editable mode)...")
     session.install("-e", ".", *TESTS_DEPS, *TYPES_DEPS, *DOCS_DEPS, "nox")
 
-    # ────────────────────────────────────────────────
     session.log("✅ Setup complete!\n")
 
-    # Get Python path (used for IDE)
     python_path = shutil.which("python", path=str(session.virtualenv.bin)) or "Not found"
-    session.log("")
     session.log(f"📍 Python interpreter path for IDEs:\n   {python_path}")
-    session.log("")
 
-    # Generate activation instructions
     venv_dir = session.virtualenv.location
     if sys.platform.startswith("win"):
         activate_cmd = f"{venv_dir}\\Scripts\\activate"
     else:
         activate_cmd = f"source {venv_dir}/bin/activate"
 
-    session.log("")
-    session.log(f"💡 To activate the virtual environment manually, run:\n   {activate_cmd}\n")
+    session.log(f"\n💡 To activate the virtual environment manually, run:\n   {activate_cmd}\n")
     session.log("🧪 You're now ready to run tests, type checks, and build docs!\n")
-    session.log("")
 
 
 @nox.session(python=PYTHON_VERSIONS)
 def tests(session: nox.Session) -> None:
     """
-    🧪 Run the test suite using pytest.
+    🧪 Run the full test suite using pytest.
 
-    Installs the project in editable mode with test dependencies and executes tests.
-    Pass additional pytest arguments via `--`:
-        nox -s tests -- -k "test_something"
+    Installs the project in editable mode and all test dependencies.
+    You can pass additional pytest options via `--`.
+
+    Examples:
+        nox -s tests
+        nox -s tests -- -k "test_core"
+        nox -s tests -- --maxfail=1 -v
     """
     session.log("🧪 Running test suite with pytest...\n")
     session.install("-e", ".", *TESTS_DEPS)
@@ -144,7 +150,13 @@ def tests(session: nox.Session) -> None:
 @nox.session
 def lint(session: nox.Session) -> None:
     """
-    🧹 Run ruff check using configuration from pyproject.toml.
+    🧹 Run code style and lint checks using Ruff.
+
+    Uses configuration from pyproject.toml.
+    Fails if style or import errors are found.
+
+    Example:
+        nox -s lint
     """
     session.log("🧹 Running ruff linter...\n")
     session.install("ruff")
@@ -155,10 +167,15 @@ def lint(session: nox.Session) -> None:
 @nox.session
 def typecheck(session: nox.Session) -> None:
     """
-    🧠 Run MyPy for static type checking.
+    🧠 Run MyPy static type checking.
 
-    Ensures type safety across the codebase. Supports custom args:
-        nox -s typecheck -- your_module.py
+    Ensures all modules conform to typing annotations and consistency.
+    You can limit checks to specific modules or files.
+
+    Examples:
+        nox -s typecheck
+        nox -s typecheck -- src/escapist/core
+        nox -s typecheck -- src/escapist/cli/__init__.py
     """
     session.log("🧠 Running type checks with MyPy...\n")
     session.install("-e", ".", "mypy", *TESTS_DEPS, *TYPES_DEPS)
@@ -169,9 +186,12 @@ def typecheck(session: nox.Session) -> None:
 @nox.session(python=DEFAULT_PYTHON_VERSION)
 def check(session: nox.Session) -> None:
     """
-    ✅ Run both lint and typecheck sessions in one step.
+    ✅ Run both lint and typecheck sessions sequentially.
 
-    This is useful for CI or pre-push validation.
+    Useful for quick validation before committing or pushing code.
+
+    Example:
+        nox -s check
     """
     session.log("✅ Running lint and typecheck sessions...\n")
     session.notify("lint")
@@ -181,9 +201,12 @@ def check(session: nox.Session) -> None:
 @nox.session(python=DEFAULT_PYTHON_VERSION)
 def build(session: nox.Session) -> None:
     """
-    📦 Build the project distribution using Hatch.
+    📦 Build source and wheel distributions using Hatch.
 
-    This creates source and wheel distributions under the `dist/` directory.
+    Produces build artifacts in the `dist/` directory.
+
+    Example:
+        nox -s build
     """
     session.log("📦 Building distribution using Hatch...\n")
     session.install("hatch")
@@ -194,10 +217,9 @@ def build(session: nox.Session) -> None:
 @nox.session(python=DEFAULT_PYTHON_VERSION)
 def changelog(session: nox.Session) -> None:
     """
-    📝 Generate a changelog from fragments using Towncrier.
+    📝 Generate a changelog from Towncrier fragments.
 
-    Usage:
-        nox -s changelog -- <version>
+    Requires a version number as an argument.
 
     Example:
         nox -s changelog -- 1.3.0
@@ -206,24 +228,25 @@ def changelog(session: nox.Session) -> None:
         session.error("❌ Missing version argument for changelog (e.g., 1.2.3)")
 
     version = session.posargs[0]
-
     session.log(f"\n📝 Generating changelog for version: {version}...\n")
     session.install("towncrier")
-    session.run("towncrier", "build", "--version", version, "--yes")
+    session.run("towncrier", "build", "--version", version, "--yes", external=True)
     session.log(f"\n✅ Changelog generated for version {version}.\n")
 
 
 @nox.session(python=DEFAULT_PYTHON_VERSION)
 def docs_serve(session: nox.Session) -> None:
     """
-    🚀 Serve the documentation locally with MkDocs and auto-reload on changes.
+    🚀 Serve documentation locally with MkDocs.
 
-    This session installs doc dependencies and generates a draft changelog if relevant.
+    Automatically rebuilds on changes and includes a draft changelog preview.
+
+    Example:
+        nox -s docs_serve
     """
     session.log("📥 Installing documentation dependencies...\n")
     session.install(*DOCS_DEPS, ".")
 
-    # Generate draft changelog if any
     draft_changelog = _draft_changelog(session)
     if draft_changelog.exists() and draft_changelog.read_text().strip():
         session.log("📝 Draft changelog generated for preview.")
@@ -231,10 +254,8 @@ def docs_serve(session: nox.Session) -> None:
         session.log("📝 No significant changes found for changelog draft.")
 
     session.log("🚀 Starting MkDocs server with auto-reload...\n")
-    # `mkdocs serve` auto-reloads on file changes by default
     session.run("mkdocs", "serve", "--livereload", external=True)
 
-    # Clean up draft changelog file after serve (if it exists)
     if draft_changelog.exists():
         draft_changelog.unlink()
         session.log("🧹 Cleaned up draft changelog.\n")
@@ -243,14 +264,13 @@ def docs_serve(session: nox.Session) -> None:
 @nox.session(python=DEFAULT_PYTHON_VERSION)
 def deploy_docs(session: nox.Session) -> None:
     """
-    Deploy the documentation site to GitHub Pages using Mike.
+    🌐 Deploy documentation to GitHub Pages via Mike.
 
-    Usage:
-        nox -s deploy_docs -- <version> [<alias>]
+    Requires a version argument and optionally an alias (like "stable").
 
     Examples:
-        nox -s deploy_docs -- 1.2.0 stable
         nox -s deploy_docs -- 1.2.0
+        nox -s deploy_docs -- 1.2.0 stable
     """
     session.install(*DOCS_DEPS, ".")
 
@@ -260,9 +280,9 @@ def deploy_docs(session: nox.Session) -> None:
     session.log(f"📚 Deploying docs for version: {version}")
     if alias:
         session.log(f"🔗 Using alias: {alias}")
-        session.run("mike", "deploy", "--update-aliases", version, alias)
-        session.run("mike", "set-default", alias)
+        session.run("mike", "deploy", "--update-aliases", version, alias, external=True)
+        session.run("mike", "set-default", alias, external=True)
     else:
-        session.run("mike", "deploy", version)
+        session.run("mike", "deploy", version, external=True)
 
     session.log("🚀 Documentation deployed successfully.")
