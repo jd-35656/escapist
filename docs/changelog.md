@@ -10,3 +10,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 {% include '_draft_changelog.md' ignore missing %}
 
 <!-- BEGIN RELEASED CHANGELOG -->
+
+## [v1.0.0](https://github.com/jd-35656/readme-credly-badges/tree/v1.0.0) - 2025-10-17
+
+### Added
+
+- Initial project scaffolding with core, CLI, tests, docs, configs, and CI setup ([#1](https://github.com/jd-35656/readme-credly-badges/issues/1))
+- Core and CLI implementations with supporting exceptions and utilities. ([#3](https://github.com/jd-35656/readme-credly-badges/issues/3))
+
+### Changed
+
+- Updated tests to cover new core and CLI features. ([#3](https://github.com/jd-35656/readme-credly-badges/issues/3))
+
+### Fixed
+
+- improve GitHub Actions workflows for caching and release versioning, update changelog. ([#3](https://github.com/jd-35656/readme-credly-badges/issues/3))

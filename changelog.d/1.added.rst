@@ -1,1 +1,0 @@
-Initial project scaffolding with core, CLI, tests, docs, configs, and CI setup
