@@ -1,0 +1,1 @@
+Improved internal module documentation and usage examples.

@@ -29,19 +29,16 @@ class Escapist:
 
     The environment is configured and created on initialization. The template can
     then be loaded via a public method and rendered using a separate public method.
+
+    Args:
+        settings: The Jinja environment settings, which can be a dict,
+                    a JSON string, or a file path to a JSON file.
+
+    Raises:
+        DataLoadError: If settings loading fails.
     """
 
     def __init__(self, settings: dict[str, Any] | str | Path | None = None) -> None:
-        """
-        Initializes the Jinja environment based on the provided settings.
-
-        Args:
-            settings: The Jinja environment settings, which can be a dict,
-                      a JSON string, or a file path to a JSON file.
-
-        Raises:
-            DataLoadError: If settings loading fails.
-        """
         logger.debug(f"Initializing Escapist with settings: {settings}")
         self._env = self._configure_env(settings)
         self._template: Any = None
