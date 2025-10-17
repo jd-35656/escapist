@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+    <url>
+         <loc>https://jd-35656.github.io/escapist/v1.0.2/</loc>
+         <lastmod>2025-10-17</lastmod>
+    </url>
+    <url>
+         <loc>https://jd-35656.github.io/escapist/v1.0.2/changelog/</loc>
+         <lastmod>2025-10-17</lastmod>
+    </url>
+    <url>
+         <loc>https://jd-35656.github.io/escapist/v1.0.2/installation/</loc>
+         <lastmod>2025-10-17</lastmod>
+    </url>
+    <url>
+         <loc>https://jd-35656.github.io/escapist/v1.0.2/development/contributing/</loc>
+         <lastmod>2025-10-17</lastmod>
+    </url>
+    <url>
+         <loc>https://jd-35656.github.io/escapist/v1.0.2/development/releasing/</loc>
+         <lastmod>2025-10-17</lastmod>
+    </url>
+    <url>
+         <loc>https://jd-35656.github.io/escapist/v1.0.2/development/testing/</loc>
+         <lastmod>2025-10-17</lastmod>
+    </url>
+    <url>
+         <loc>https://jd-35656.github.io/escapist/v1.0.2/reference/api/</loc>
+         <lastmod>2025-10-17</lastmod>
+    </url>
+    <url>
+         <loc>https://jd-35656.github.io/escapist/v1.0.2/reference/cli/</loc>
+         <lastmod>2025-10-17</lastmod>
+    </url>
+</urlset>
