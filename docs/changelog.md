@@ -11,6 +11,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 <!-- BEGIN RELEASED CHANGELOG -->
 
+## [v1.0.2](https://github.com/jd-35656/readme-credly-badges/tree/v1.0.2) - 2025-10-17
+
+### Fixed
+
+- Improved internal module documentation and usage examples. ([#5](https://github.com/jd-35656/readme-credly-badges/issues/5))
+
+
 ## [v1.0.1](https://github.com/jd-35656/readme-credly-badges/tree/v1.0.1) - 2025-10-17
 
 No significant changes.
