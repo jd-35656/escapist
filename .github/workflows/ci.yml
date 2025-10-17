@@ -44,14 +44,6 @@ jobs:
           python-version: ${{ matrix.python-version }}
           cache: pip
 
-      - name: Cache Nox environments
-        uses: actions/cache@v4
-        with:
-          path: .nox
-          key: nox-${{ matrix.os }}-${{ matrix.python-version }}-${{ hashFiles('noxfile.py', 'pyproject.toml') }}
-          restore-keys: |
-            nox-${{ matrix.os }}-${{ matrix.python-version }}-
-
       - name: Install Nox
         run: |
           echo "::group::Installing Nox"
@@ -76,14 +68,6 @@ jobs:
         with:
           python-version: ${{ env.default-python }}
           cache: pip
-
-      - name: Cache Nox environments
-        uses: actions/cache@v4
-        with:
-          path: .nox
-          key: nox-ubuntu-latest-${{ env.default-python }}-${{ hashFiles('noxfile.py', 'pyproject.toml') }}
-          restore-keys: |
-            nox-ubuntu-latest-${{ env.default-python }}-
 
       - name: Install Nox
         run: |
