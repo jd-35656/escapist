@@ -3,6 +3,43 @@
 # SPDX-License-Identifier: MIT
 
 
+"""
+Exception definitions for the Escapist library.
+
+This module defines a set of custom exceptions used throughout the Escapist
+template rendering and data processing system. All exceptions inherit from
+`EscapistError`, allowing for broad or fine-grained error handling.
+
+Usage:
+    You can catch specific exceptions to handle known issues gracefully:
+
+    ```python
+    from escapist.exceptions import (
+        EscapistError,
+        DataLoadError,
+        FileWriteError,
+        InvalidTemplateError,
+        InvalidTemplateSyntaxError,
+    )
+
+    try:
+        ....
+    except DataLoadError as e:
+        print(f"Failed to load data: {e}")
+    except FileWriteError as e:
+        print(f"Could not write to output file: {e}")
+    except InvalidTemplateSyntaxError as e:
+        print(f"Template syntax error: {e}")
+    except EscapistError as e:
+        # Generic catch-all for any Escapist-related error
+        print(f"An unknown Escapist error occurred: {e}")
+    ```
+
+    These exceptions are designed to clearly communicate the source of errors
+    during common operations like data loading, template parsing, and file output.
+"""
+
+
 class EscapistError(Exception):
     """Base exception for all Escapist-related errors.
 

@@ -71,10 +71,10 @@ escapist batch TEMPLATE_DIR \
 You can also use Escapist as a Python library for programmatic rendering.
 
 ```python
-from escapist.core import JinjaRenderer
+from escapist import Escapist
 
 # Initialize renderer with optional settings
-renderer = JinjaRenderer(settings="path/to/settings.json")
+renderer = Escapist(settings="path/to/settings.json")
 
 # Load template (file path or template string)
 renderer.load_template("path/to/template.jinja")
